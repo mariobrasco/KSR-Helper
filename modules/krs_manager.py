@@ -33,14 +33,11 @@ class KRSManager:
                 if req not in matkul_lulus:
                     return f"❌ Gagal: Kamu belum lulus prasyarat ({req})."
 
-        # ==========================================
-        # VALIDASI SKS BERDASARKAN SEMESTER DAN IP
-        # ==========================================
         semester = int(mahasiswa.get("semester", 1))
         ip_terakhir = float(mahasiswa.get("ip_terakhir", 0.0))
 
         jatah_sks = 20 # Default untuk Maba (Semester 1)
-        if semester > 1:
+        if semester > 2:
             if ip_terakhir >= 3.50:
                 jatah_sks = 24
             elif ip_terakhir >= 3.00:

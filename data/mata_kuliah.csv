@@ -1,11 +1,11 @@
 kode,nama,kuota,prasyarat,sks
-RL117,Dasar Pemrograman,3,-,3
-RL118,Matematika Dasar,3,-,3
+RL117,Dasar Pemrograman,3,-,10
+RL118,Matematika Dasar,3,-,10
 RL120,Matematika Diskrit,3,RL118,3
 RL216,Struktur Data dan Algoritma,2,RL117,3
 RL315,Basis Data,2,RL117;RL120,3
 RL322,OOP,2,RL117,3
 RL316,Sistem Operasi,2,RL117,3
-RL116,Pengantar RPL,3,-,2
+RL116,Pengantar RPL,3,-,5
 RL215,Rekayasa Kebutuhan Perangkat Lunak,2,RL116,3
 KA591,Skripsi,1,RL216;RL315;RL322;RL316;RL215,6
