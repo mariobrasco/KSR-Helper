@@ -1,0 +1,11 @@
+id_kelas,kode_matkul,ruangan,hari,jam
+KLS01,RL117,Lab Komputer 1,Senin,08:00
+KLS02,RL118,Ruang Teori B,Senin,10:00
+KLS03,RL120,Ruang Teori C,Selasa,08:00
+KLS04,RL216,Lab Komputer 2,Selasa,10:00
+KLS05,RL315,Lab Database,Rabu,10:00
+KLS06,RL322,Lab Komputer 3,Rabu,13:00
+KLS07,RL316,Lab Sistem Operasi,Kamis,08:00
+KLS08,RL116,Ruang Teori A,Kamis,13:00
+KLS09,RL215,Ruang Teori B,Jumat,08:00
+KLS10,KA591,Ruang Sidang,Jumat,13:00
