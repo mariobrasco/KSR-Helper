@@ -136,9 +136,8 @@ def lihatMahasiswa():
         f"{'Semester':<8} | "
         f"{'IP':<6} | "
         f"{'Dosen Wali':<15} | "
-        f"{'Matkul Lulus':<50}"
     )
-    print("-" * 150)
+    print("-" * 100)
 
     nomor = 1
 
@@ -150,7 +149,6 @@ def lihatMahasiswa():
             f"{mahasiswa['semester']:<8} | "
             f"{mahasiswa['ip_terakhir']:<6} | "
             f"{mahasiswa['nip_dosen_wali']:<15} | "
-            f"{mahasiswa['matkul_lulus']:<50}"
         )
 
         nomor += 1
