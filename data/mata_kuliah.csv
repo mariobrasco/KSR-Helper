@@ -1,11 +1,48 @@
-kode,nama,kuota,prasyarat,sks
-RL117,Dasar Pemrograman,3,-,10
-RL118,Matematika Dasar,3,-,10
-RL120,Matematika Diskrit,3,RL118,3
-RL216,Struktur Data dan Algoritma,2,RL117,3
-RL315,Basis Data,2,RL117;RL120,3
-RL322,OOP,2,RL117,3
-RL316,Sistem Operasi,2,RL117,3
-RL116,Pengantar RPL,3,-,5
-RL215,Rekayasa Kebutuhan Perangkat Lunak,2,RL116,3
-KA591,Skripsi,1,RL216;RL315;RL322;RL316;RL215,6
+kode,nama,prasyarat,sks,semester,kelompok_pilihan,min_sks_lulus
+RL118,Matematika Dasar,-,4,1,-,0
+RL117,Dasar Pemrograman,-,4,1,-,0
+RL115,Teknologi Informasi dan Komunikasi,-,3,1,-,0
+RL116,Pengantar Rekayasa Perangkat Lunak,-,3,1,-,0
+KU110,Pendidikan Pancasila,-,2,1,-,0
+KU100,Pendidikan Agama,-,2,1,-,0
+KU106,Pendidikan Bahasa Indonesia,-,2,1,-,0
+RL120,Matematika Diskrit,RL118,3,2,-,0
+RL216,Struktur Data dan Algoritma,RL117,4,2,-,0
+CB401,Desain Berpikir,-,3,2,-,0
+RL215,Rekayasa Kebutuhan Perangkat Lunak,RL116,4,2,-,0
+KU105,Pendidikan Kewarganegaraan,-,2,2,-,0
+DK300,Landasan Pendidikan,-,2,2,-,0
+KU119,Apresiasi Seni,-,2,2,PILIHAN_SENI_OLAHRAGA,0
+KU108,Pendidikan Olahraga,-,2,2,PILIHAN_SENI_OLAHRAGA,0
+RL220,Pemodelan Perangkat Lunak,RL215,4,3,-,0
+RL217,Interaksi Manusia dan Komputer,RL216,4,3,-,0
+RL219,Manajemen Proyek Perangkat Lunak,RL215,3,3,-,0
+RL315,Basis Data,RL117;RL120,5,3,-,0
+RL218,Arsitektur dan Organisasi Komputer,RL216,3,3,-,0
+KU300,Seminar Pendidikan Agama,KU100,2,3,-,0
+UN200,Literasi Kecerdasan Artifisial,RL117;RL120,3,3,-,0
+KU409,Pendidikan Anti Korupsi,KU105,3,3,-,0
+RL316,Sistem Operasi,RL218,3,4,-,0
+RL317,Jaringan Komputer,RL218,3,4,-,0
+RL318,Pemrograman Web,RL117;RL216,5,4,-,0
+PT400,Keterampilan Berbahasa Inggris,-,3,4,-,0
+RL320,Verifikasi Validasi Perangkat Lunak,RL220,4,4,-,0
+RL322,Pemrograman Berorientasi Objek,RL117;RL216,4,4,-,0
+RL323,Keamanan Perangkat Lunak,RL317,4,4,-,0
+RL405,Pengembangan Aplikasi Terdistribusi,RL315;RL318,4,5,-,0
+RL406,Pemrograman Mobile,RL322,4,5,-,0
+RL407,Kapita Selekta,RL215,4,5,-,0
+RL408,Etika Profesi dan Kemampuan Komunikasi,PT400,4,5,-,0
+RL409,Kecerdasan Buatan,RL120;RL216,4,5,-,0
+RL500,Pembelajaran Mesin,RL120;RL409,4,5,-,0
+KI417,Magang Industri,RL405;RL406;RL500,24,6,-,0
+RL501,Text dan Web Mining,RL315;RL318,4,7,-,0
+RL505,Pengembangan Aplikasi Media Interaktif,RL217;RL318,4,7,-,0
+RL506,Pengembangan Game,RL322,4,7,-,0
+RL510,Konstruksi Perangkat Lunak,RL220;RL320,4,7,-,0
+RL511,Desain Interaksi Pengguna,RL217,4,7,-,0
+KA591,Skripsi,RL405;RL406;RL500;KI417,8,7,-,136
+RL512,Pemeliharaan Perangkat Lunak,RL510,6,8,-,0
+KA592,Artikel Ilmiah,KA591,6,8,-,0
+KA593,Prototipe Produk Industri,RL505;RL506,6,8,-,0
+KA600,Portofolio Pencapaian Prestasi,KI417,6,8,-,0

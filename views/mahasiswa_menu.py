@@ -4,27 +4,27 @@
 def menuMahasiswa(mahasiswa, krs_logic):
     while True:
         print("\n=== MENU MAHASISWA ===")
-        print("Nama:", mahasiswa["nama"])
-        print("NIM :", mahasiswa["nim"])
-        print(f"Semester : {mahasiswa['semester']}")
-        print(f"IP       : {mahasiswa['ip_terakhir']}")
+        print("Nama     :", mahasiswa["nama"])
+        print("NIM      :", mahasiswa["nim"])
+        print("Semester :", mahasiswa["semester"])
+        print("IP       :", mahasiswa["ip_terakhir"])
         print("----------------------")
-        print("1. Lihat daftar mata kuliah")
+        print("1. Lihat kelas yang bisa diambil")
         print("2. Lihat tree prasyarat")
-        print("3. Ambil mata kuliah")
-        print("4. Batalkan mata kuliah")
+        print("3. Ambil kelas mata kuliah")
+        print("4. Batalkan kelas mata kuliah")
         print("5. Lihat status KRS saya")
         print("6. Lihat waiting list saya")
-        print("7. Lihat hasil KRS (Cetak Jadwal)")
+        print("7. Lihat hasil KRS / jadwal mingguan")
         print("8. Logout")
 
         pilihan = input("Pilih menu: ")
 
         if pilihan == "1":
-            tampilkanDaftarMataKuliah(krs_logic)
+            tampilkanDaftarKelas(mahasiswa, krs_logic)
 
         elif pilihan == "2":
-            tampilkanTreePrasyarat(krs_logic)
+            menuTreePrasyarat(mahasiswa, krs_logic)
 
         elif pilihan == "3":
             ambilMataKuliah(mahasiswa, krs_logic)
@@ -49,45 +49,94 @@ def menuMahasiswa(mahasiswa, krs_logic):
             print("Pilihan tidak valid.")
 
 
-def tampilkanDaftarMataKuliah(krs_logic):
-    daftar_matkul = krs_logic.getDaftarMataKuliah()
+def tampilkanDaftarKelas(mahasiswa, krs_logic):
+    daftar_kelas = krs_logic.getDaftarKelasTersedia(mahasiswa["nim"])
 
-    print("\n--- DAFTAR MATA KULIAH ---")
-    print(f"{'Kode':<8} | {'Nama Mata Kuliah':<40} | {'Kuota':<5} | {'Prasyarat':<20}")
-    print("-" * 85)
+    print(f"\n--- DAFTAR KELAS YANG BISA DIAMBIL MAHASISWA SEMESTER {mahasiswa['semester']} ---")
 
-    if len(daftar_matkul) == 0:
-        print("Belum ada data mata kuliah.")
+    if len(daftar_kelas) == 0:
+        print("Belum ada kelas yang tersedia untuk kamu.")
+        print("Kemungkinan semua mata kuliah semester ini sudah lulus/diambil, atau prasyarat belum terpenuhi.")
         return
 
-    for matkul in daftar_matkul:
-        kode_matkul = matkul["kode"]
-        nama_matkul = matkul["nama"]
-        kuota = matkul["kuota"]
-        prasyarat = matkul["prasyarat"]
+    print(
+        f"{'ID Kelas':<10} | "
+        f"{'Kode MK':<8} | "
+        f"{'Mata Kuliah':<40} | "
+        f"{'SKS':<3} | "
+        f"{'Dosen Pengampu':<28} | "
+        f"{'Kelas':<5} | "
+        f"{'Hari':<8} | "
+        f"{'Jam':<12} | "
+        f"{'Ruangan':<22} | "
+        f"{'Peserta':<8} | "
+        f"{'WL':<3}"
+    )
+    print("-" * 170)
 
-        print(f"{kode_matkul:<8} | {nama_matkul:<40} | {kuota:<5} | {prasyarat:<20}")
+    for kelas in daftar_kelas:
+        print(
+            f"{kelas['id_kelas']:<10} | "
+            f"{kelas['kode_matkul']:<8} | "
+            f"{kelas['nama']:<40} | "
+            f"{kelas['sks']:<3} | "
+            f"{kelas['nama_dosen']:<28} | "
+            f"{kelas['nama_kelas']:<5} | "
+            f"{kelas['hari']:<8} | "
+            f"{kelas['jam']:<12} | "
+            f"{kelas['ruangan']:<22} | "
+            f"{kelas['peserta']:<8} | "
+            f"{kelas['waiting']:<3}"
+        )
+
+    print("-" * 170)
+    print("Keterangan:")
+    print("Peserta = jumlah mahasiswa masuk kelas / kuota kelas")
+    print("WL      = jumlah mahasiswa di waiting list")
+    print("Catatan : kelas yang tampil adalah kelas yang memenuhi semester, prasyarat, dan belum pernah kamu ambil/lulus.")
 
 
-def tampilkanTreePrasyarat(krs_logic):
-    print("\n--- TREE PRASYARAT MATA KULIAH ---")
+def menuTreePrasyarat(mahasiswa, krs_logic):
+    while True:
+        print("\n=== MENU TREE PRASYARAT ===")
+        print("1. Lihat tree seluruh prasyarat menuju Skripsi")
+        print("2. Lihat tree mata kuliah semester saya")
+        print("3. Lihat tree mata kuliah semester sebelumnya")
+        print("4. Lihat tree mata kuliah semester berikutnya")
+        print("5. Kembali")
 
-    try:
-        krs_logic.tampilkanTreePrasyarat()
-    except AttributeError:
-        print("Fitur tree prasyarat belum tersedia di krs_manager.")
+        pilihan = input("Pilih menu: ")
+
+        if pilihan == "1":
+            print("\n--- TREE SELURUH PRASYARAT MENUJU SKRIPSI ---")
+            krs_logic.tampilkanTreePrasyarat()
+
+        elif pilihan == "2":
+            krs_logic.tampilkanTreeSemesterMahasiswa(mahasiswa["nim"], "sekarang")
+
+        elif pilihan == "3":
+            krs_logic.tampilkanTreeSemesterMahasiswa(mahasiswa["nim"], "sebelumnya")
+
+        elif pilihan == "4":
+            krs_logic.tampilkanTreeSemesterMahasiswa(mahasiswa["nim"], "berikutnya")
+
+        elif pilihan == "5":
+            break
+
+        else:
+            print("Pilihan tidak valid.")
 
 
 def ambilMataKuliah(mahasiswa, krs_logic):
-    tampilkanDaftarMataKuliah(krs_logic)
+    tampilkanDaftarKelas(mahasiswa, krs_logic)
 
     print("\nKetik 'batal' untuk kembali ke menu.")
-    kode_matkul = input("Masukkan kode mata kuliah yang ingin diambil: ").upper()
+    id_kelas = input("Masukkan ID kelas yang ingin diambil: ").upper()
 
-    if kode_matkul.lower() == "batal":
+    if id_kelas.lower() == "batal":
         return
 
-    hasil = krs_logic.ambilMataKuliah(mahasiswa["nim"], kode_matkul)
+    hasil = krs_logic.ambilMataKuliah(mahasiswa["nim"], id_kelas)
     print(hasil)
 
 
@@ -95,62 +144,103 @@ def batalkanMataKuliah(mahasiswa, krs_logic):
     tampilkanStatusKrs(mahasiswa, krs_logic)
 
     print("\nKetik 'batal' untuk kembali ke menu.")
-    kode_matkul = input("Masukkan kode mata kuliah yang ingin dibatalkan: ").upper()
+    id_kelas = input("Masukkan ID kelas yang ingin dibatalkan: ").upper()
 
-    if kode_matkul.lower() == "batal":
+    if id_kelas.lower() == "batal":
         return
 
-    hasil = krs_logic.batalkanMataKuliah(mahasiswa["nim"], kode_matkul)
+    hasil = krs_logic.batalkanMataKuliah(mahasiswa["nim"], id_kelas)
     print(hasil)
 
 
 def tampilkanStatusKrs(mahasiswa, krs_logic):
     print("\n--- STATUS KRS SAYA ---")
 
-    try:
-        daftar_krs = krs_logic.getKrsMahasiswa(mahasiswa["nim"])
-    except AttributeError:
-        print("Fitur status KRS belum tersedia di krs_manager.")
-        return
+    daftar_krs = krs_logic.getKrsMahasiswa(mahasiswa["nim"])
 
     if len(daftar_krs) == 0:
-        print("Kamu belum mengambil mata kuliah.")
+        print("Kamu belum mengambil kelas mata kuliah.")
         return
 
-    print(f"{'No':<4} | {'Kode MK':<10} | {'Nama Mata Kuliah':<40} | {'Status':<20}")
-    print("-" * 85)
+    print(
+        f"{'No':<4} | "
+        f"{'ID Kelas':<10} | "
+        f"{'Kode MK':<8} | "
+        f"{'Mata Kuliah':<38} | "
+        f"{'SKS':<3} | "
+        f"{'Dosen':<28} | "
+        f"{'Hari':<8} | "
+        f"{'Jam':<12} | "
+        f"{'Ruang':<20} | "
+        f"{'Status':<20}"
+    )
+    print("-" * 165)
 
     nomor = 1
-    for krs in daftar_krs:
-        kode_matkul = krs["kode_matkul"]
-        nama_matkul = krs.get("nama", "-")
-        status = krs["status"]
+    total_sks_aktif = 0
 
-        print(f"{nomor:<4} | {kode_matkul:<10} | {nama_matkul:<40} | {status:<20}")
+    for krs in daftar_krs:
+        print(
+            f"{nomor:<4} | "
+            f"{krs['id_kelas']:<10} | "
+            f"{krs['kode_matkul']:<8} | "
+            f"{krs['nama']:<38} | "
+            f"{krs['sks']:<3} | "
+            f"{krs['nama_dosen']:<28} | "
+            f"{krs['hari']:<8} | "
+            f"{krs['jam']:<12} | "
+            f"{krs['ruangan']:<20} | "
+            f"{krs['status']:<20}"
+        )
+
+        if krs["status"] == "menunggu_validasi" or krs["status"] == "disetujui":
+            total_sks_aktif += int(krs["sks"])
+
         nomor += 1
+
+    jatah_sks = krs_logic.getJatahSks(mahasiswa)
+
+    print("-" * 165)
+    print(f"Total SKS aktif: {total_sks_aktif}/{jatah_sks}")
 
 
 def tampilkanWaitingListMahasiswa(mahasiswa, krs_logic):
     print("\n--- WAITING LIST SAYA ---")
 
-    try:
-        daftar_waiting = krs_logic.getWaitingListMahasiswa(mahasiswa["nim"])
-    except AttributeError:
-        print("Fitur waiting list mahasiswa belum tersedia di krs_manager.")
-        return
+    daftar_waiting = krs_logic.getWaitingListMahasiswa(mahasiswa["nim"])
 
     if len(daftar_waiting) == 0:
         print("Kamu tidak sedang berada di waiting list.")
         return
 
-    print(f"{'No':<4} | {'Kode MK':<10} | {'Nama Mata Kuliah':<40} | {'Urutan':<8}")
-    print("-" * 75)
+    print(
+        f"{'No':<4} | "
+        f"{'ID Kelas':<10} | "
+        f"{'Kode MK':<8} | "
+        f"{'Mata Kuliah':<35} | "
+        f"{'Dosen':<28} | "
+        f"{'Kelas':<5} | "
+        f"{'Hari':<8} | "
+        f"{'Jam':<12} | "
+        f"{'Ruangan':<22} | "
+        f"{'Urutan':<8}"
+    )
+    print("-" * 175)
 
     nomor = 1
-    for data in daftar_waiting:
-        kode_matkul = data["kode_matkul"]
-        nama_matkul = data.get("nama", "-")
-        urutan = data.get("urutan", "-")
 
-        print(f"{nomor:<4} | {kode_matkul:<10} | {nama_matkul:<40} | {urutan:<8}")
+    for data in daftar_waiting:
+        print(
+            f"{nomor:<4} | "
+            f"{data['id_kelas']:<10} | "
+            f"{data['kode_matkul']:<8} | "
+            f"{data['nama']:<35} | "
+            f"{data['nama_dosen']:<28} | "
+            f"{data['nama_kelas']:<5} | "
+            f"{data['hari']:<8} | "
+            f"{data['jam']:<12} | "
+            f"{data['ruangan']:<22} | "
+            f"{data['urutan']:<8}"
+        )
+
         nomor += 1

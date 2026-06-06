@@ -5,6 +5,8 @@ from modules.admin_manager import (
     tambahDosen,
     lihatMahasiswa,
     lihatDosen,
+    lihatMataKuliah,
+    lihatKelas,
     hapusMahasiswa,
     hapusDosen
 )
@@ -19,9 +21,11 @@ def menuAdmin(admin):
         print("2. Tambah akun dosen")
         print("3. Lihat data mahasiswa")
         print("4. Lihat data dosen")
-        print("5. Hapus akun mahasiswa")
-        print("6. Hapus akun dosen")
-        print("7. Logout")
+        print("5. Lihat data mata kuliah")
+        print("6. Lihat data kelas")
+        print("7. Hapus akun mahasiswa")
+        print("8. Hapus akun dosen")
+        print("9. Logout")
 
         pilihan = input("Pilih menu: ")
 
@@ -38,12 +42,18 @@ def menuAdmin(admin):
             lihatDosen()
 
         elif pilihan == "5":
-            hapusMahasiswa()
+            lihatMataKuliah()
 
         elif pilihan == "6":
-            hapusDosen()
+            lihatKelas()
 
         elif pilihan == "7":
+            hapusMahasiswa()
+
+        elif pilihan == "8":
+            hapusDosen()
+
+        elif pilihan == "9":
             print("Logout admin berhasil.")
             break
 
