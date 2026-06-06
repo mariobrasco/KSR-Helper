@@ -7,67 +7,25 @@ def menuDosen(dosen, krs_logic):
         print("Nama:", dosen["nama"])
         print("NIP :", dosen["nip"])
         print("------------------")
-        print("1. Lihat & validasi pengajuan KRS")
-        print("2. Lihat mahasiswa yang sudah disetujui")
-        print("3. Lihat waiting list mata kuliah")
-        print("4. Input nilai IP Mahasiswa Wali")
+        print("1. Lihat kelas yang saya ampu")
+        print("2. Lihat & validasi pengajuan KRS")
+        print("3. Lihat mahasiswa yang sudah disetujui")
+        print("4. Lihat waiting list kelas")
         print("5. Logout")
 
         pilihan = input("Pilih menu: ")
 
         if pilihan == "1":
-            validasiPengajuanKrs(dosen, krs_logic)
+            tampilkanKelasDosen(dosen, krs_logic)
 
         elif pilihan == "2":
-            tampilkanMahasiswaDisetujui(dosen, krs_logic)
+            validasiPengajuanKrs(dosen, krs_logic)
 
         elif pilihan == "3":
-            tampilkanWaitingListDosen(dosen, krs_logic)
+            tampilkanMahasiswaDisetujui(dosen, krs_logic)
 
         elif pilihan == "4":
-            print("\n--- DAFTAR MAHASISWA ---")
-            semua_mahasiswa = krs_logic.csv.bacaCsv("data/mahasiswa.csv")
-            
-            if len(semua_mahasiswa) == 0:
-                print("Belum ada data mahasiswa di sistem.")
-            else:
-                print(f"{'No':<4} | {'NIM':<10} | {'Nama Mahasiswa':<30} | {'Semester':<8} | {'IP Terakhir':<11} | {'NIP Wali':<10}")
-                print("-" * 85)
-                
-                nomor = 1
-                for mhs in semua_mahasiswa:
-                    nim_mhs = mhs.get("nim", "-")
-                    nama_mhs = mhs.get("nama", "-")
-                    smt_mhs = mhs.get("semester", "-")
-                    ip_mhs = mhs.get("ip_terakhir", "-")
-                    wali_mhs = mhs.get("nip_dosen_wali", "-")
-
-                    status_wali = wali_mhs
-                    if wali_mhs == dosen["nip"]:
-                        status_wali = f"{wali_mhs} (Mhs Kamu)"
-                        
-                    print(f"{nomor:<4} | {nim_mhs:<10} | {nama_mhs:<30} | {smt_mhs:<8} | {ip_mhs:<11} | {status_wali}")
-                    nomor += 1
-                print("-" * 85)
-
-            print("\n*Ketik 'batal' pada kolom NIM untuk kembali ke menu")
-            nim_input = input("Masukkan NIM Mahasiswa Perwalian: ")
-            
-            if nim_input.lower() == 'batal':
-                continue
-                
-            ip_input = input("Masukkan Nilai IP (Format angka, misal: 3.80): ")
-
-            try:
-                ip_float = float(ip_input)
-                hasil = krs_logic.inputNilaiIp(dosen["nip"], nim_input, ip_float)
-                print(hasil)
-            except ValueError:
-                print("❌ Gagal: Format IP salah! Pastikan kamu menggunakan angka dan titik (bukan koma).")
-
-        elif pilihan == "5":
-            print("Logout dosen berhasil.")
-            break
+            tampilkanWaitingListDosen(dosen, krs_logic)
 
         elif pilihan == "5":
             print("Logout dosen berhasil.")
@@ -75,6 +33,47 @@ def menuDosen(dosen, krs_logic):
 
         else:
             print("Pilihan tidak valid.")
+
+
+def tampilkanKelasDosen(dosen, krs_logic):
+    daftar_kelas = krs_logic.getDaftarKelasDosen(dosen["nip"])
+
+    print("\n--- KELAS YANG SAYA AMPU ---")
+
+    if len(daftar_kelas) == 0:
+        print("Belum ada kelas yang diampu.")
+        return
+
+    print(
+        f"{'No':<4} | "
+        f"{'ID Kelas':<10} | "
+        f"{'Kode MK':<8} | "
+        f"{'Mata Kuliah':<40} | "
+        f"{'Kelas':<5} | "
+        f"{'Hari':<8} | "
+        f"{'Jam':<12} | "
+        f"{'Ruangan':<22} | "
+        f"{'Peserta':<8} | "
+        f"{'WL':<3}"
+    )
+    print("-" * 155)
+
+    nomor = 1
+
+    for kelas in daftar_kelas:
+        print(
+            f"{nomor:<4} | "
+            f"{kelas['id_kelas']:<10} | "
+            f"{kelas['kode_matkul']:<8} | "
+            f"{kelas['nama']:<40} | "
+            f"{kelas['nama_kelas']:<5} | "
+            f"{kelas['hari']:<8} | "
+            f"{kelas['jam']:<12} | "
+            f"{kelas['ruangan']:<22} | "
+            f"{kelas['peserta']:<8} | "
+            f"{kelas['waiting']:<3}"
+        )
+        nomor += 1
 
 
 def validasiPengajuanKrs(dosen, krs_logic):
@@ -86,6 +85,7 @@ def validasiPengajuanKrs(dosen, krs_logic):
         total_data = len(daftar_pengajuan)
 
         total_halaman = total_data // batas_per_halaman
+
         if total_data % batas_per_halaman > 0:
             total_halaman += 1
 
@@ -100,11 +100,21 @@ def validasiPengajuanKrs(dosen, krs_logic):
 
         index_awal = (halaman_saat_ini - 1) * batas_per_halaman
         index_akhir = index_awal + batas_per_halaman
+
         data_di_halaman_ini = daftar_pengajuan[index_awal:index_akhir]
 
         print(f"\n--- DAFTAR PENGAJUAN KRS HALAMAN {halaman_saat_ini}/{total_halaman} ---")
-        print(f"{'No':<4} | {'NIM':<12} | {'Kode MK':<10} | {'Nama Mata Kuliah':<35} | {'Status':<20}")
-        print("-" * 95)
+        print(
+            f"{'No':<4} | "
+            f"{'NIM':<12} | "
+            f"{'Nama Mahasiswa':<30} | "
+            f"{'ID Kelas':<10} | "
+            f"{'Kode MK':<8} | "
+            f"{'Mata Kuliah':<35} | "
+            f"{'Kelas':<5} | "
+            f"{'Status':<18}"
+        )
+        print("-" * 140)
 
         if len(data_di_halaman_ini) == 0:
             print("Tidak ada pengajuan KRS yang perlu divalidasi.")
@@ -112,15 +122,20 @@ def validasiPengajuanKrs(dosen, krs_logic):
             nomor_urut = index_awal + 1
 
             for data in data_di_halaman_ini:
-                nim = data["nim"]
-                kode_matkul = data["kode_matkul"]
-                nama_matkul = data.get("nama", "-")
-                status = data["status"]
+                print(
+                    f"{nomor_urut:<4} | "
+                    f"{data['nim']:<12} | "
+                    f"{data['nama_mahasiswa']:<30} | "
+                    f"{data['id_kelas']:<10} | "
+                    f"{data['kode_matkul']:<8} | "
+                    f"{data['nama']:<35} | "
+                    f"{data['nama_kelas']:<5} | "
+                    f"{data['status']:<18}"
+                )
 
-                print(f"{nomor_urut:<4} | {nim:<12} | {kode_matkul:<10} | {nama_matkul:<35} | {status:<20}")
                 nomor_urut += 1
 
-        print("-" * 95)
+        print("-" * 140)
         print("\nOpsi:")
         print("- Ketik nomor urut untuk ACC/Tolak")
         print("- Ketik 'n' untuk halaman berikutnya")
@@ -151,21 +166,25 @@ def validasiPengajuanKrs(dosen, krs_logic):
                 data_terpilih = daftar_pengajuan[index_pilihan]
 
                 nim_target = data_terpilih["nim"]
-                kode_matkul = data_terpilih["kode_matkul"]
+                id_kelas = data_terpilih["id_kelas"]
 
                 print("\nData yang dipilih:")
-                print("NIM      :", nim_target)
-                print("Kode MK  :", kode_matkul)
-                print("Status   :", data_terpilih["status"])
+                print("NIM        :", nim_target)
+                print("Nama       :", data_terpilih["nama_mahasiswa"])
+                print("ID Kelas   :", id_kelas)
+                print("Kode MK    :", data_terpilih["kode_matkul"])
+                print("Mata Kuliah:", data_terpilih["nama"])
+                print("Kelas      :", data_terpilih["nama_kelas"])
+                print("Status     :", data_terpilih["status"])
 
                 keputusan = input("Ketik 'acc' untuk setujui atau 'tolak' untuk menolak: ").lower()
 
                 if keputusan == "acc":
-                    hasil = krs_logic.validasiKrs(dosen["nip"], nim_target, kode_matkul, True)
+                    hasil = krs_logic.validasiKrs(dosen["nip"], nim_target, id_kelas, True)
                     print(hasil)
 
                 elif keputusan == "tolak":
-                    hasil = krs_logic.validasiKrs(dosen["nip"], nim_target, kode_matkul, False)
+                    hasil = krs_logic.validasiKrs(dosen["nip"], nim_target, id_kelas, False)
                     print(hasil)
 
                 else:
@@ -181,53 +200,75 @@ def validasiPengajuanKrs(dosen, krs_logic):
 def tampilkanMahasiswaDisetujui(dosen, krs_logic):
     print("\n--- MAHASISWA YANG SUDAH DISETUJUI ---")
 
-    try:
-        daftar_mahasiswa = krs_logic.getMahasiswaDisetujui(dosen["nip"])
-    except AttributeError:
-        print("Fitur mahasiswa disetujui belum tersedia di krs_manager.")
-        return
+    daftar_mahasiswa = krs_logic.getMahasiswaDisetujui(dosen["nip"])
 
     if len(daftar_mahasiswa) == 0:
         print("Belum ada mahasiswa yang disetujui.")
         return
 
-    print(f"{'No':<4} | {'NIM':<12} | {'Nama Mahasiswa':<35} | {'Kode MK':<10} | {'Nama Mata Kuliah':<35}")
-    print("-" * 110)
+    print(
+        f"{'No':<4} | "
+        f"{'NIM':<12} | "
+        f"{'Nama Mahasiswa':<30} | "
+        f"{'ID Kelas':<10} | "
+        f"{'Kode MK':<8} | "
+        f"{'Mata Kuliah':<35} | "
+        f"{'Kelas':<5}"
+    )
+    print("-" * 125)
 
     nomor = 1
-    for data in daftar_mahasiswa:
-        nim = data["nim"]
-        nama_mahasiswa = data.get("nama_mahasiswa", "-")
-        kode_matkul = data["kode_matkul"]
-        nama_matkul = data.get("nama", "-")
 
-        print(f"{nomor:<4} | {nim:<12} | {nama_mahasiswa:<35} | {kode_matkul:<10} | {nama_matkul:<35}")
+    for data in daftar_mahasiswa:
+        print(
+            f"{nomor:<4} | "
+            f"{data['nim']:<12} | "
+            f"{data['nama_mahasiswa']:<30} | "
+            f"{data['id_kelas']:<10} | "
+            f"{data['kode_matkul']:<8} | "
+            f"{data['nama']:<35} | "
+            f"{data['nama_kelas']:<5}"
+        )
         nomor += 1
 
 
 def tampilkanWaitingListDosen(dosen, krs_logic):
-    print("\n--- WAITING LIST MATA KULIAH DOSEN ---")
+    print("\n--- WAITING LIST KELAS SAYA ---")
 
-    try:
-        daftar_waiting = krs_logic.getWaitingListDosen(dosen["nip"])
-    except AttributeError:
-        print("Fitur waiting list dosen belum tersedia di krs_manager.")
-        return
+    daftar_waiting = krs_logic.getWaitingListDosen(dosen["nip"])
 
     if len(daftar_waiting) == 0:
-        print("Tidak ada mahasiswa dalam waiting list untuk mata kuliah yang kamu ampu.")
+        print("Tidak ada mahasiswa dalam waiting list untuk kelas yang kamu ampu.")
         return
 
-    print(f"{'No':<4} | {'Kode MK':<10} | {'Nama Mata Kuliah':<35} | {'NIM':<12} | {'Nama Mahasiswa':<35} | {'Urutan':<8}")
-    print("-" * 120)
+    print(
+        f"{'No':<4} | "
+        f"{'ID Kelas':<10} | "
+        f"{'Kode MK':<8} | "
+        f"{'Mata Kuliah':<32} | "
+        f"{'Kelas':<5} | "
+        f"{'Hari':<8} | "
+        f"{'Jam':<12} | "
+        f"{'NIM':<12} | "
+        f"{'Nama Mahasiswa':<30} | "
+        f"{'Urutan':<8}"
+    )
+    print("-" * 155)
 
     nomor = 1
-    for data in daftar_waiting:
-        kode_matkul = data["kode_matkul"]
-        nama_matkul = data.get("nama", "-")
-        nim = data["nim"]
-        nama_mahasiswa = data.get("nama_mahasiswa", "-")
-        urutan = data.get("urutan", "-")
 
-        print(f"{nomor:<4} | {kode_matkul:<10} | {nama_matkul:<35} | {nim:<12} | {nama_mahasiswa:<35} | {urutan:<8}")
+    for data in daftar_waiting:
+        print(
+            f"{nomor:<4} | "
+            f"{data['id_kelas']:<10} | "
+            f"{data['kode_matkul']:<8} | "
+            f"{data['nama']:<32} | "
+            f"{data['nama_kelas']:<5} | "
+            f"{data['hari']:<8} | "
+            f"{data['jam']:<12} | "
+            f"{data['nim']:<12} | "
+            f"{data['nama_mahasiswa']:<30} | "
+            f"{data['urutan']:<8}"
+        )
+
         nomor += 1
